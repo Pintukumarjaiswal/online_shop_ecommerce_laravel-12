@@ -17,16 +17,12 @@ class AdminCheckMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         if (Auth::check() && Auth::user()->role == 2) {
-            // dd("admin hai");
-        return $next($request);
-    }
+            return $next($request);
+        }
 
-     if (Auth::check() && Auth::user()->role == 1) {
-            // dd("admin hai");
-        return $next($request);
+        if (Auth::check() && Auth::user()->role == 1) {
+            return $next($request);
+        }
+        abort(403, 'Unauthorized');
     }
-
-    dd("admin nahi hia");
-    abort(403, 'Unauthorized');
-}
 }

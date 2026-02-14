@@ -2,7 +2,10 @@
 
 use App\Http\Controllers\admin\AdminDashboardController;
 use App\Http\Controllers\admin\AdminLoginController;
+use App\Http\Controllers\admin\CategoryController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 Route::get('/', function () {
     return view('welcome');
@@ -15,9 +18,24 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('/authenticate', [AdminLoginController::class, 'authenticate'])->name('admin.authenticate');
 
     Route::middleware(['auth', 'role:2'])->group(function () {
-        Route::get('/dashboard', [AdminDashboardController::class,'index'])->name('admin.dashboard');
-        Route::get('/logout', [AdminLoginController::class,'logout'])->name('admin.logout');
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+        Route::get('/logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
+
+        // Category Route Management
+        Route::get('/categories', [CategoryController::class, 'create'])->name('categories.create');
+        Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+        Route::get('/categories/list', [CategoryController::class, 'index'])->name('categories.list');
     });
+    Route::get('/getslug', function (Request $request) {
+        $slug = '';
+        if (!empty($request->name)) {
+            $slug = Str::slug($request->name);
+            return response()->json([
+                'status' => true,
+                'slug' => $slug,
+            ]);
+        }
+    })->name('getSlug');
 
     Route::middleware(['auth', 'role:1'])->group(function () {
         Route::get('/dashboard/user', function () {
@@ -25,6 +43,11 @@ Route::group(['prefix' => 'admin'], function () {
         })->name('user.dashboard');
     });
 });
+
 // });
 // }'])
 // Route::get('admin/login',[AdminLoginController::class,'index'])->name('admin.login');
+
+Route::fallback(function(){
+    return "Route Not Found";
+});
