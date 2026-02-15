@@ -12,6 +12,13 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias(['role' => \App\Http\Middleware\AdminCheckMiddleware::class]);
+         $middleware->redirectGuestsTo(function ($request) {
+        if ($request->is('admin/*')) {
+            return route('admin.login');
+        }
+
+        return route('admin.login'); // only if you have normal login
+    });
         // $middleware->append(middleware: \App\Http\Middleware\AdminCheckMiddleware::class);
             
     })

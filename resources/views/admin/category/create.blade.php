@@ -41,6 +41,18 @@
 
                             <div class="col-md-6">
                                 <div class="mb-3">
+                                    <label for="image">Image</label>
+                                    <div id="image" class="dropzone">
+                                        <div class="dz-message needsclick">
+                                            <br>Drop File here or Click to Uplaod <br><br>
+                                        </div>
+                                    </div>
+                                    <input type="text" name="image_id" id="image_id">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="mb-3">
                                     <label for="status">Status</label>
                                     <select name="status" id="status" class="form-control">
                                         <option value="1">Active</option>
@@ -161,6 +173,30 @@
             });
 
         });
+
+        // DropZone setup js
+
+        Dropzone.autoDiscover = false;
+        const dropzone = $('#image').dropzone({
+            init: function () {
+                this.on('addedfile', function (file) {
+                    if(this.files.length > 1){
+                        this.removeFile(this.files[0]);
+                    }
+                })
+            },
+            url: "{{ route('temp-images.create')}}",
+            maxFiles:1,
+            paramName: 'image',
+            addRemoveLinks: true,
+            acceptedFiles: "image/jpeg,image/png,image/gif",
+            headers : {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function (file, response) {
+                $('#image_id').val(response.image_id);
+            }
+        })
 
     </script>
 
