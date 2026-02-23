@@ -22,9 +22,13 @@ class SubCategoryController extends Controller
     $subCategories = SubCategory::join('categories', 'sub_category.categoryId', '=', 'categories.id')
         ->select('sub_category.*', 'categories.name as category_name');
 
+
      if (!empty($request->input('table_search'))) {
             $search = $request->input('table_search');
-            $subCategories = SubCategory::where('name', 'like', "%$search%");
+            $subCategories = SubCategory::where('sub_category.name', 'like', "%$search%")
+            ->orWhere('categories.name', 'like', "%$search%")
+            ->join('categories', 'sub_category.categoryId', '=', 'categories.id')
+           ->select('sub_category.*', 'categories.name as category_name');
         }
 
     // Paginate (NO get() before this)
