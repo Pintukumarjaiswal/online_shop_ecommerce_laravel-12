@@ -3,6 +3,7 @@
 use App\Http\Controllers\admin\AdminDashboardController;
 use App\Http\Controllers\admin\AdminLoginController;
 use App\Http\Controllers\admin\CategoryController;
+use App\Http\Controllers\admin\SubCategoryController;
 use App\Http\Controllers\admin\TempImagesController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
@@ -32,7 +33,18 @@ Route::group(['prefix' => 'admin'], function () {
 
         // Temporary Route for Category List
         Route::post('/temp-image-create', [TempImagesController::class, 'create'])->name('temp-images.create');
+
+        // Sub_Category_Route Here.....===================================
+        Route::get('/sub-category/create', [SubCategoryController::class, 'index'])->name('subcategory.create');
+        Route::post('/sub-categories', [SubCategoryController::class, 'store'])->name('subcategories.store');
+        Route::get('/sub-categories/list', [SubCategoryController::class, 'list'])->name('subcategories.list');
     });
+
+
+
+
+
+
     Route::get('/getslug', function (Request $request) {
         $slug = '';
         if (!empty($request->name)) {
@@ -55,6 +67,6 @@ Route::group(['prefix' => 'admin'], function () {
 // }'])
 // Route::get('admin/login',[AdminLoginController::class,'index'])->name('admin.login');
 
-Route::fallback(function(){
+Route::fallback(function () {
     return "Route Not Found";
 });
